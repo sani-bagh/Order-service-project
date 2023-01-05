@@ -1,0 +1,22 @@
+version: '3.1'
+services:
+  db:
+    container_name: 'payment-db'
+    image: postgres:alpine
+    ports:
+      - '5434:5432'
+    environment:
+      - POSTGRES_DB=paymentdb
+      - POSTGRES_USER=paymentdbuser
+      - POSTGRES_PASSWORD=unicorn
+  application:
+    container_name: 'payment-service'
+    image: payment-service:1
+    ports:
+      - '8086:8086'
+    profiles: ['payment-service']
+    environment:
+      POSTGRES_JDBC_USER: paymentdbuser
+      POSTGRES_JDBC_PASS: unicorn
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://db:5432/paymentdb"
+      SPRING_PROFILES_ACTIVE: local

@@ -1,0 +1,21 @@
+spring:
+  rabbitmq:
+    host: localhost
+  application-test:
+    yml:
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+    database: postgresql
+    show-sql: true
+    hibernate:
+      ddl-auto: validate
+  datasource:
+    driver-class-name: org.testcontainers.jdbc.ContainerDatabaseDriver
+    url: jdbc:tc:postgresql:14.2-alpine:///orderdb
+    username: orderdbuser
+    password: secret
+  sql:
+    init:
+      platform: orderdb

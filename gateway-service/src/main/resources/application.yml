@@ -1,0 +1,48 @@
+spring:
+  application:
+    name: gateway-service
+  cloud:
+    gateway:
+      routes:
+        - id: order-service
+          uri: lb://order-service
+          predicates:
+            - Path=/api/order/**
+        - id: payment-service
+          uri: lb://payment-service
+          predicates:
+            - Path=/api/payment/**
+        - id: shipping-service
+          uri: lb://shipping-service
+          predicates:
+            - Path=/api/shipping/**
+
+server:
+  port: 8080
+
+resilience4j:
+  circuitbreaker:
+    configs:
+      shared:
+        register-health-indicator: true
+        sliding-window-type: count_based
+        sliding-window-size: 5
+        failure-rate-threshold: 40
+        slow-call-rate-threshold: 40
+        permitted-number-of-calls-in-half-open-state: 1
+        max-wait-duration-in-half-open-state: 10s
+        wait-duration-in-open-state: 10s
+        slow-call-duration-threshold: 2s
+        writable-stack-trace-enabled: true
+        automatic-transition-from-open-to-half-open-enabled: true
+    instances:
+      gateway-service:
+        base-config: shared
+management:
+  health:
+    circuitbreakers:
+      enabled: true
+  endpoint:
+    health:
+      show-details: always
+

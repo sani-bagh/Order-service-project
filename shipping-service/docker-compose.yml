@@ -1,0 +1,22 @@
+version: '3.1'
+services:
+  db:
+    container_name: 'postgres-db'
+    image: postgres:alpine
+    ports:
+      - '5433:5432'
+    environment:
+      - POSTGRES_DB=shippingdb
+      - POSTGRES_USER=shippingdbuser
+      - POSTGRES_PASSWORD=rainbow
+  application:
+    container_name: 'shipping-service'
+    image: payment-service:1
+    ports:
+      - '8087:8087'
+    profiles: ['shipping-service']
+    environment:
+      POSTGRES_JDBC_USER: shippingdbuser
+      POSTGRES_JDBC_PASS: rainbow
+      SPRING_DATASOURCE_URL: "jdbc:postgresql://db:5432/shippingdb"
+      SPRING_PROFILES_ACTIVE: local
